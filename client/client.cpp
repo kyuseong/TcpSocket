@@ -76,12 +76,10 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	while (1) {
 
+		service->poll();
+
 		// std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
-		char a;
-		std::cin >> a;
-		if (a == 'a')
-			service->close_all();
 	}
 
 	service->term();

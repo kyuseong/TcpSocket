@@ -44,6 +44,9 @@
     <ClInclude Include="..\net\TcpConnection.h">
       <Filter>net</Filter>
     </ClInclude>
+    <ClInclude Include="..\net\Packet.h">
+      <Filter>net</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -68,6 +71,9 @@
       <Filter>net</Filter>
     </ClCompile>
     <ClCompile Include="..\net\TcpConnection.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\net\Packet.cpp">
       <Filter>net</Filter>
     </ClCompile>
   </ItemGroup>

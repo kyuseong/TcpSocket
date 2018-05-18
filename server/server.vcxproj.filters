@@ -44,6 +44,9 @@
     <ClInclude Include="..\net\NetServiceError.h">
       <Filter>net</Filter>
     </ClInclude>
+    <ClInclude Include="..\net\Packet.h">
+      <Filter>net</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -69,6 +72,9 @@
     </ClCompile>
     <ClCompile Include="server.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\net\Packet.cpp">
+      <Filter>net</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
