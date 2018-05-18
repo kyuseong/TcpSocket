@@ -36,18 +36,18 @@ NetService::~NetService(void)
 {
 }
 
-bool NetService::start()
+bool NetService::init()
 {
-	LIB_LOG(lv::info) << "[NetService::start]";
+	LIB_LOG(lv::info) << "[NetService::init]";
 
 	post_timer();
 
 	return true;
 }
 
-void NetService::run()
+void NetService::run_io_worker()
 {
-	LIB_LOG(lv::info) << "[NetService::run]";
+	LIB_LOG(lv::info) << "[NetService::run_io_worker]";
 	
 	work_.reset(new boost::asio::io_service::work(io_service_));
 	auto worker = boost::bind(&boost::asio::io_service::run, &io_service_);
@@ -58,10 +58,15 @@ void NetService::run()
 	}
 }
 
-
-void NetService::stop()
+void NetService::poll()
 {
-	LIB_LOG(lv::info) << "[NetService::stop]";
+	io_service_.poll();
+}
+
+
+void NetService::term()
+{
+	LIB_LOG(lv::info) << "[NetService::term]";
 
 	stop_acceptor();
 
@@ -159,13 +164,11 @@ bool NetService::connect(int64& id)
 	return ret;
 }
 
-
-bool NetService::is_alive(int64 id)
+bool NetService::is_connected(int64 id)
 {
 	TcpConnectionPtr ptr = get_connection(id);
 	return ( ptr != nullptr);
 }
-
 
 TcpConnectionPtr NetService::get_connection(int64 id)
 {
@@ -196,7 +199,7 @@ TcpConnectionPtr NetService::get_connection(int64 id)
 //	}
 //}
 
-
+// buffer 에 해당하는 내용을 전송한다.
 void NetService::send_buffer(int64 id, buffer_ptr_t buffer)
 {
 	TcpConnectionPtr ptr = get_connection(id);
@@ -208,9 +211,24 @@ void NetService::send_buffer(int64 id, buffer_ptr_t buffer)
 	return;
 }
 
-void NetService::completed_accepted( TcpConnectionPtr connection, const boost::system::error_code& error )
+
+// accept을 요청함
+void NetService::post_accept()
 {
-	LIB_LOG(lv::trace) << "[NetService::completed_accepted] - start - id:" << connection->id() <<  ",error:" << error;
+	LIB_LOG(lv::trace) << "[NetService::post_accept] - start";
+
+	TcpConnectionPtr connection = std::make_shared<TcpConnection>(io_service_, event_listener_,/* &message_handler_,*/ config_);
+	
+	int64 id = top_id_++;
+	connection->id(id);
+
+	acceptor_.async_accept(connection->socket(), boost::bind(&NetService::completed_accept, this, connection, boost::asio::placeholders::error));
+}
+
+// accept 됨
+void NetService::completed_accept(TcpConnectionPtr connection, const boost::system::error_code& error)
+{
+	LIB_LOG(lv::trace) << "[NetService::completed_accept] - start - id:" << connection->id() << ",error:" << error;
 
 	if (error != boost::system::errc::operation_canceled)
 	{
@@ -218,7 +236,7 @@ void NetService::completed_accepted( TcpConnectionPtr connection, const boost::s
 	}
 	else if (error)
 	{
-		LIB_LOG(lv::error) << "[NetService::completed_accepted] - error - id:" << connection->id() <<  ",error:" << error;
+		LIB_LOG(lv::error) << "[NetService::completed_accept] - error - id:" << connection->id() << ",error:" << error;
 		return;
 	}
 
@@ -233,7 +251,7 @@ void NetService::completed_accepted( TcpConnectionPtr connection, const boost::s
 	}
 	if (!inserted)
 	{
-		LIB_LOG(lv::error) << "[NetService::completed_accepted] - insert failed - id: " << id << ",remote address : " << connection->remote_address();
+		LIB_LOG(lv::error) << "[NetService::completed_accept] - insert failed - id: " << id << ",remote address : " << connection->remote_address();
 		connection->close(false);
 		return;
 	}
@@ -241,18 +259,7 @@ void NetService::completed_accepted( TcpConnectionPtr connection, const boost::s
 	connection->accpeted(error);
 }
 
-void NetService::post_accept()
-{
-	LIB_LOG(lv::trace) << "[NetService::post_accept] - start";
-
-	TcpConnectionPtr connection = std::make_shared<TcpConnection>(io_service_, event_listener_,/* &message_handler_,*/ config_);
-	
-	int64 id = top_id_++;
-	connection->id(id);
-
-	acceptor_.async_accept(connection->socket(), boost::bind(&NetService::completed_accepted, this, connection, boost::asio::placeholders::error));
-}
-
+// 주기적으로 처리해야하는 작업을 처리한다.
 void NetService::completed_timer(const boost::system::error_code& error)
 {
 	LIB_LOG(lv::trace) << "[NetService::completed_timer] - start";
@@ -276,6 +283,8 @@ void NetService::post_timer()
 	timer_.async_wait(strand_.wrap(boost::bind(&NetService::completed_timer, this, boost::asio::placeholders::error)));
 }
 
+// 이미 접속이 끊어진 클라이언트들을 정리한다.
+// map안에는 이미 key/value(connection) value가 null임
 void NetService::check_zombie_client()
 {
 	LIB_LOG(lv::trace) << "[NetService::check_zombie_client] - begin";

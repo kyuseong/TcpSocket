@@ -26,7 +26,6 @@ class Server : public NetServiceDelegate
 	{
 		LIB_LOG(lv::trace) << "[Server] handle_receive - id:" << id;
 
-
 		service->send_buffer(id, buffer);
 
 		return false;
@@ -46,14 +45,14 @@ int _tmain(int argc, _TCHAR* argv[])
 	Server* server = new Server();
 	service = new NetService(config, server);
 
-	service->start();
+	service->init();
 	service->start_acceptor();
-	service->run();
+	service->run_io_worker();
 
 	while (1)
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
-	service->stop();
+	service->term();
 
 	return 0;
 }

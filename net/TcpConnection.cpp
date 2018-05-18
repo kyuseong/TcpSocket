@@ -21,7 +21,6 @@ TcpConnection::TcpConnection( boost::asio::io_service& io_service, NetServiceDel
 :	io_service_(io_service),
 	socket_(io_service), 
 	event_listener_(event_listener), 
-//	message_handler_(message_handler),
 	timer_(io_service), 
 	config_(config),
 	strand_(io_service),

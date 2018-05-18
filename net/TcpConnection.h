@@ -36,6 +36,7 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection>
 	// 
 	boost::asio::io_service& io_service_;
 	// io strand (connect/send/receive/timer)
+	// µø±‚»≠ ∞¥√º
 	boost::asio::io_service::strand strand_;
 	// socket
 	boost::asio::ip::tcp::socket socket_;
@@ -69,9 +70,9 @@ public:
 
 	boost::asio::ip::tcp::socket& socket();
 	std::string remote_address();
-	// send
+	// send packet
 	// void send_packet(std::shared_ptr<ns::nspacket> packet);
-	// send
+	// send buffer
 	void send_buffer(buffer_ptr_t buffer);
 	// send message
 	// void send_message(const ::google::protobuf::Message& message);

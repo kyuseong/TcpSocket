@@ -66,9 +66,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	Client* server = new Client();
 	service = new NetService(config, server);
 
-	service->start();
-	//service->start_acceptor();
-	service->run();
+	service->init();
+	// service->run_io_worker();
 
 	for (int i = 0; i<1; ++i) {
 		int64 id;
@@ -76,7 +75,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	}
 
 	while (1) {
-		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+		// std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
 		char a;
 		std::cin >> a;
@@ -84,7 +84,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			service->close_all();
 	}
 
-	service->stop();
+	service->term();
 
 	return 0;
 }

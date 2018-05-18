@@ -21,8 +21,8 @@
 
 namespace Idea 
 {
-	//bool serialize( const std::shared_ptr<ns::nspacket>& packet, buffer_ptr_t& buffer);
 	bool serialize_header(const buffer_ptr_t& payload_buffer, buffer_ptr_t& buffer );
-
+	
+	//bool serialize( const std::shared_ptr<ns::nspacket>& packet, buffer_ptr_t& buffer);
 	//bool deserialize(const buffer_ptr_t& buffer, std::shared_ptr<ns::nspacket>& packet);
 }

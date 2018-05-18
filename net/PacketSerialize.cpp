@@ -55,6 +55,7 @@ bool serialize( const std::shared_ptr<ns::nspacket>& packet, buffer_ptr_t& buffe
 }*/
 
 // packet -> buffer 
+// - length (header) + data ·Î Á¶ÇÕ
 bool serialize_header(const buffer_ptr_t& payload_buffer, buffer_ptr_t& buffer )
 {
 	int payload_length = (int)payload_buffer->size();
