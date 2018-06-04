@@ -72,7 +72,6 @@ public:
 
 	// buffer 에 해당하는 내용을 전송한다.
 	void send_buffer(int64 id, buffer_ptr_t buffer);
-	
 	/*template <typename T>
 	void register_message_handler( boost::function<void (int64, std::shared_ptr<T>)> func )
 	{

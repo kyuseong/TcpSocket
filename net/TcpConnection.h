@@ -14,6 +14,7 @@
 #include <boost/atomic.hpp>
 
 #include "NetServiceDelegate.h"
+#include "Packet.h"
 
 namespace Idea {
 
@@ -70,10 +71,10 @@ public:
 
 	boost::asio::ip::tcp::socket& socket();
 	std::string remote_address();
-	// send packet
-	// void send_packet(std::shared_ptr<ns::nspacket> packet);
+	
 	// send buffer
 	void send_buffer(buffer_ptr_t buffer);
+
 	// send message
 	// void send_message(const ::google::protobuf::Message& message);
 	// accpeted µÇ¾úÀ½

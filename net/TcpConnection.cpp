@@ -124,6 +124,7 @@ void TcpConnection::send_buffer( buffer_ptr_t buffer_ptr )
 
 	strand_.post( boost::bind(&TcpConnection::send_buffer_lock, shared_from_this(), buffer_ptr) );
 }
+
 //
 //void TcpConnection::send_message(const ::google::protobuf::Message& message)
 //{

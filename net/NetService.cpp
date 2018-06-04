@@ -211,7 +211,6 @@ void NetService::send_buffer(int64 id, buffer_ptr_t buffer)
 	return;
 }
 
-
 // accept을 요청함
 void NetService::post_accept()
 {

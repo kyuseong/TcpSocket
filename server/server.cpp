@@ -32,9 +32,9 @@ class Server : public NetServiceDelegate
 	}
 }; 
 
-int _tmain(int argc, _TCHAR* argv[])
+
+void run_tcpserver()
 {
-	//LOG_INIT(lv::trace);
 
 	server_config config;
 
@@ -53,6 +53,13 @@ int _tmain(int argc, _TCHAR* argv[])
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
 	service->term();
+
+}
+
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+	//LOG_INIT(lv::trace);
 
 	return 0;
 }
